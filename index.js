@@ -1,11 +1,10 @@
 const readlineSync = require('readline-sync');
 const chalk = require('chalk');
 
-const fs    = require('fs');
-const path  = require('path');
-const glob  = require('glob');
 const Parser = require('tree-sitter');
 const Python = require('tree-sitter-python');
+
+const { listPythonFiles } = require('./lib/listPythonFiles.js');
 
 // Defining Chalk Colors
 
@@ -18,3 +17,7 @@ const warning = chalk.yellow.bold;
 
 console.log(message('Welcome to Django Static Analyzer!'));
 const path = readlineSync.question(message('Enter the path for Django\'s root directory: '));
+console.log(message('Analyzing the directory...'));
+
+ let pyFiles = listPythonFiles(path)
+ console.log(pyFiles)
