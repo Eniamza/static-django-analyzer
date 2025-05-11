@@ -106,6 +106,108 @@ function getInstalledApps(ast) {
     return installedApps;
 }
 
+function parseCallNode(callNode) {
+    let NodeArgs = callNode.namedChildren;
+    let identifierNode = NodeArgs[0];
+    let argsNode = NodeArgs[1];
+
+    if (!identifierNode) {
+        console.log('Invalid call node structure:', callNode);
+        throw new Error('Invalid call node structure');
+    }
+
+    if (identifierNode.type === 'identifier') {
+        if (identifierNode.text === 'include') {
+            let includeString = argsNode.descendantsOfType('string_content')[0]
+            return includeString
+        }
+    }
+
+    let nodeName
+    let argList
+    if (identifierNode.type === 'attribute') {
+        if(identifierNode.text.startsWith("view")) {
+            let newNodeName = identifierNode.text.split(".").slice(1).join(".")   
+            nodeName = newNodeName
+            argList = []
+            argsNode.namedChildren.forEach((child) => {
+                argList.push(child.text)
+            })
+
+            return {
+                nodeName: nodeName,
+                argList: argList
+            }
+        }
+        else {
+            nodeName = identifierNode.text
+            argList = []
+            console.log('argsNode111111111111:', argsNode);
+
+            return {
+                nodeName: nodeName,
+                argList: argList
+            }
+        }
+        
+    }
+
+    
+}
+
+function parseKeywordArguments(arg) {
+    let keywordArguments = {};
+    let keywordArgs = arg.namedChildren;
+
+    // [
+    //     IdentifierNode {
+    //       type: identifier,
+    //       startPosition: {row: 40, column: 37},
+    //       endPosition: {row: 40, column: 41},
+    //       childCount: 0,
+    //     },
+    //     StringNode {
+    //       type: string,
+    //       startPosition: {row: 40, column: 42},
+    //       endPosition: {row: 40, column: 48},
+    //       childCount: 3,
+    //     }
+    //   ]
+
+    let identifierNode = keywordArgs[0];
+    let valueNode = keywordArgs[1];
+
+    if (!identifierNode || !valueNode) {
+        console.log('Invalid keyword argument structure:', arg);
+        throw new Error('Invalid keyword argument structure');
+    }
+
+    let keywordName = identifierNode.text;
+    let keywordValue = valueNode.text;
+
+    if (valueNode.type === 'string') {
+        keywordValue = keywordValue.slice(1, -1); // Remove quotes
+    }
+    else if (valueNode.type === 'call') {
+        console.log('Call node found----------------------');
+        let parsedCall = parseCallNode(valueNode);
+        keywordValue = parsedCall
+
+    }
+
+    // console.log('Parsed keyword argument:', {
+    //     keywordName: keywordName,
+    //     keywordValue: keywordValue,
+    //     valueNodeType: valueNode.type,
+    // });
+
+    return {
+        keywordName: keywordName,
+        keywordValue: keywordValue,
+        valueNodeType: valueNode.type,
+    };
+}
+
 function getRootUrls(ast, installedApps) {
     let rootNode = ast.rootNode;
 
@@ -162,37 +264,56 @@ function getRootUrls(ast, installedApps) {
         for (const [index, arg] of value.entries()) {
             // If the index is 0 and it's not a keyword argument, it's the route
             if (index === 0 && arg.type !== 'keyword_argument') {
+                buildPathArgumentObject.route = arg.text;
                 console.log('route:', arg.text);
             }
             // If the index is 1 and it's not a keyword argument, it's the view
             else if (index === 1 && arg.type !== 'keyword_argument') {
+                buildPathArgumentObject.view = arg.text;
                 console.log('view:', arg.text);
             }
             // If the index is 2 and it's a dictionary type, it's the kwargs
             else if (index === 2 && arg.type === 'dictionary') {
+                buildPathArgumentObject.kwargs = arg.text;
                 console.log('kwargs:', arg.text);
             }
             // If the index is 3 and it's not a keyword argument, it's the name
             else if (index === 3 && arg.type !== 'keyword_argument') {
+                buildPathArgumentObject.name = arg.text;
                 console.log('name:', arg.text);
             }
             // If it's a keyword argument, check its name and assign it accordingly
             else if (arg.type === 'keyword_argument') {
-                // let keywordName = arg.firstNamedChild.text;
-                // let keywordValue = arg.lastNamedChild.text;
 
-                // if (keywordName === 'kwargs') {
-                //     buildPathArgumentObject.kwargs = keywordValue;
-                // } else if (keywordName === 'name') {
-                //     buildPathArgumentObject.name = keywordValue.slice(1, -1);
-                // }
-                console.log('keyword argument:', arg.text);
+                let parsedKeyword = parseKeywordArguments(arg);
+                let keywordName = parsedKeyword.keywordName;
+                let keywordValue = parsedKeyword.keywordValue;
+
+                if (keywordName === 'name') {
+                    buildPathArgumentObject.name = keywordValue;
+                    console.log('name:', keywordValue);
+                } else if (keywordName === 'kwargs') {
+                    buildPathArgumentObject.kwargs = keywordValue;
+                    console.log('kwargs:', keywordValue);
+                } else if (keywordName === 'route') {
+                    buildPathArgumentObject.route = keywordValue;
+                    console.log('route:', keywordValue);
+                } else if (keywordName === 'view') {
+                    buildPathArgumentObject.view = keywordValue;
+                    console.log('view:', keywordValue);
+                }
+                else {
+                    console.log('Unknown keyword argument:', keywordName);
+                }
             }
       }
+
+        pathCallandResolvedArgumentsMap[key] = buildPathArgumentObject
     
     }
     // console.log('All path and re_path calls:', pathCallandArgumentsMap);
-    return pathCallandArgumentsMap;
+    console.log('All path and re_path calls:', pathCallandResolvedArgumentsMap);
+    return pathCallandResolvedArgumentsMap;
 }
 
 module.exports = { processArguments, checkArguments, getSettingsFile, getInstalledApps , getRootUrls }
