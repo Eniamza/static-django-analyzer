@@ -1,0 +1,182 @@
+{
+  "api/v1/movies/": {
+    "route": "'api/v1/movies/'",
+    "view": {
+      "nodeName": "include",
+      "argList": "movies.urls"
+    },
+    "kwargs": null,
+    "name": null
+  },
+  "api/v1/auth/": {
+    "route": "'api/v1/auth/'",
+    "view": {
+      "nodeName": "include",
+      "argList": "authentication.urls"
+    },
+    "kwargs": null,
+    "name": null
+  },
+  "admin/": {
+    "route": "'admin/'",
+    "view": "admin.site.urls",
+    "kwargs": null,
+    "name": null
+  },
+  "\"^static/(?P<path>.*)$": {
+    "route": "r\"^static/(?P<path>.*)$\"",
+    "view": "serve_static",
+    "kwargs": null,
+    "name": null
+  },
+  "robots.txt": {
+    "route": "'robots.txt'",
+    "view": "static.serve",
+    "kwargs": "{'document_root': settings.STATICFILES_DIRS[0], 'path': 'robots.txt'}",
+    "name": null
+  },
+  "favicon.ico": {
+    "route": "'favicon.ico'",
+    "view": "static.serve",
+    "kwargs": "{'document_root': settings.STATICFILES_DIRS[0], 'path': 'favicon.ico'}",
+    "name": null
+  },
+  "docs/": {
+    "route": "'docs/'",
+    "view": {
+      "nodeName": "RedirectView.as_view",
+      "argList": [
+        "url='https://github.com/ArchiveBox/ArchiveBox/wiki'"
+      ]
+    },
+    "kwargs": null,
+    "name": "Docs"
+  },
+  "public/": {
+    "route": "'public/'",
+    "view": {
+      "nodeName": "PublicIndexView.as_view",
+      "argList": []
+    },
+    "kwargs": null,
+    "name": "public-index"
+  },
+  "archive/": {
+    "route": "'archive/'",
+    "view": {
+      "nodeName": "RedirectView.as_view",
+      "argList": [
+        "url='/'"
+      ]
+    },
+    "kwargs": null,
+    "name": null
+  },
+  "archive/<path:path>": {
+    "route": "'archive/<path:path>'",
+    "view": {
+      "nodeName": "SnapshotView.as_view",
+      "argList": []
+    },
+    "kwargs": null,
+    "name": "Snapshot"
+  },
+  "admin/core/snapshot/add/": {
+    "route": "'admin/core/snapshot/add/'",
+    "view": {
+      "nodeName": "RedirectView.as_view",
+      "argList": [
+        "url='/add/'"
+      ]
+    },
+    "kwargs": null,
+    "name": null
+  },
+  "add/": {
+    "route": "'add/'",
+    "view": {
+      "nodeName": "AddView.as_view",
+      "argList": []
+    },
+    "kwargs": null,
+    "name": "add"
+  },
+  "accounts/login/": {
+    "route": "'accounts/login/'",
+    "view": {
+      "nodeName": "RedirectView.as_view",
+      "argList": [
+        "url='/admin/login/'"
+      ]
+    },
+    "kwargs": null,
+    "name": null
+  },
+  "accounts/logout/": {
+    "route": "'accounts/logout/'",
+    "view": {
+      "nodeName": "RedirectView.as_view",
+      "argList": [
+        "url='/admin/logout/'"
+      ]
+    },
+    "kwargs": null,
+    "name": null
+  },
+  "accounts/": {
+    "route": "'accounts/'",
+    "view": {
+      "nodeName": "include",
+      "argList": "django.contrib.auth.urls"
+    },
+    "kwargs": null,
+    "name": null
+  },
+  "api/": {
+    "route": "\"api/\"",
+    "view": {
+      "nodeName": "include",
+      "argList": "api.urls"
+    },
+    "kwargs": null,
+    "name": "api"
+  },
+  "health/": {
+    "route": "'health/'",
+    "view": {
+      "nodeName": "HealthCheckView.as_view",
+      "argList": [
+        "url='/admin/login/'",
+        "route=\"/22/22/22\""
+      ]
+    },
+    "kwargs": null,
+    "name": "healthcheck"
+  },
+  "error/": {
+    "route": "error/",
+    "view": "lambda *_: 1/0",
+    "kwargs": null,
+    "name": null
+  },
+  "index.html": {
+    "route": "'index.html'",
+    "view": {
+      "nodeName": "RedirectView.as_view",
+      "argList": [
+        "url='/'"
+      ]
+    },
+    "kwargs": null,
+    "name": null
+  },
+  "": {
+    "route": "''",
+    "view": {
+      "nodeName": "HomepageView.as_view",
+      "argList": []
+    },
+    "kwargs": null,
+    "name": "Home"
+  }
+}

@@ -1,4 +1,4 @@
-
+const fs = require('fs');
 
 
 function processArguments(ast) {
@@ -118,8 +118,11 @@ function parseCallNode(callNode) {
 
     if (identifierNode.type === 'identifier') {
         if (identifierNode.text === 'include') {
-            let includeString = argsNode.descendantsOfType('string_content')[0]
-            return includeString
+            let includeString = argsNode.descendantsOfType('string_content')[0].text
+            return {
+                nodeName: identifierNode.text,
+                argList: includeString
+            }
         }
     }
 
@@ -142,7 +145,10 @@ function parseCallNode(callNode) {
         else {
             nodeName = identifierNode.text
             argList = []
-            console.log('argsNode111111111111:', argsNode);
+            argsNode.namedChildren.forEach((child) => {
+                console.log('child:', child.text);
+                argList.push(child.text)
+            })
 
             return {
                 nodeName: nodeName,
@@ -269,8 +275,15 @@ function getRootUrls(ast, installedApps) {
             }
             // If the index is 1 and it's not a keyword argument, it's the view
             else if (index === 1 && arg.type !== 'keyword_argument') {
-                buildPathArgumentObject.view = arg.text;
-                console.log('view:', arg.text);
+                if (arg.type === 'call') {
+                    let parsedCall = parseCallNode(arg);
+                    buildPathArgumentObject.view = parsedCall;
+                    console.log('view:', parsedCall.nodeName);
+                }
+                else {
+                    buildPathArgumentObject.view = arg.text;
+                    console.log('view:', arg.text);
+                }
             }
             // If the index is 2 and it's a dictionary type, it's the kwargs
             else if (index === 2 && arg.type === 'dictionary') {
@@ -313,6 +326,7 @@ function getRootUrls(ast, installedApps) {
     }
     // console.log('All path and re_path calls:', pathCallandArgumentsMap);
     console.log('All path and re_path calls:', pathCallandResolvedArgumentsMap);
+    fs.writeFileSync('pathCallandResolvedArgumentsMap.json', JSON.stringify(pathCallandResolvedArgumentsMap, null, 2), 'utf-8');
     return pathCallandResolvedArgumentsMap;
 }
 
