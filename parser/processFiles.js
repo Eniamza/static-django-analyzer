@@ -131,13 +131,17 @@ function getRootUrls(ast, installedApps) {
     for (const pathCall of allPathCallNodes) {
         let arguments = pathCall.namedChildren[1];
         let pathName = arguments.descendantsOfType('string')[0].text.slice(1, -1);
-        pathCallandArgumentsMap[pathName] = []
         let pathArguments = []
 
         arguments.namedChildren.forEach((arg) => {
             pathArguments.push(arg)
         }
         )
+
+        if (pathCallandArgumentsMap.hasOwnProperty(pathName)) {
+            console.log('Collision detected for path: (Skipping)', pathName);
+            continue
+        }
 
         pathCallandArgumentsMap[pathName] = pathArguments
         
