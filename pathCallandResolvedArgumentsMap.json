@@ -1,28 +1,4 @@
 {
-  "api/v1/movies/": {
-    "route": "'api/v1/movies/'",
-    "view": {
-      "nodeName": "include",
-      "argList": "movies.urls"
-    },
-    "kwargs": null,
-    "name": null
-  },
-  "api/v1/auth/": {
-    "route": "'api/v1/auth/'",
-    "view": {
-      "nodeName": "include",
-      "argList": "authentication.urls"
-    },
-    "kwargs": null,
-    "name": null
-  },
-  "admin/": {
-    "route": "'admin/'",
-    "view": "admin.site.urls",
-    "kwargs": null,
-    "name": null
-  },
   "\"^static/(?P<path>.*)$": {
     "route": "r\"^static/(?P<path>.*)$\"",
     "view": "serve_static",
@@ -101,6 +77,15 @@
     "kwargs": null,
     "name": "add"
   },
+  "jobs/": {
+    "route": "\"jobs/\"",
+    "view": {
+      "nodeName": "JobsDashboardView.as_view",
+      "argList": []
+    },
+    "kwargs": null,
+    "name": "jobs_dashboard"
+  },
   "accounts/login/": {
     "route": "'accounts/login/'",
     "view": {
@@ -132,6 +117,12 @@
     "kwargs": null,
     "name": null
   },
+  "admin/": {
+    "route": "'admin/'",
+    "view": "archivebox_admin.urls",
+    "kwargs": null,
+    "name": null
+  },
   "api/": {
     "route": "\"api/\"",
     "view": {
@@ -145,16 +136,13 @@
     "route": "'health/'",
     "view": {
       "nodeName": "HealthCheckView.as_view",
-      "argList": [
-        "url='/admin/login/'",
-        "route=\"/22/22/22\""
-      ]
+      "argList": []
     },
     "kwargs": null,
     "name": "healthcheck"
   },
   "error/": {
-    "route": "error/",
+    "route": "'error/'",
     "view": "lambda *_: 1/0",
     "kwargs": null,
     "name": null
@@ -178,5 +166,23 @@
     },
     "kwargs": null,
     "name": "Home"
+  },
+  "__debug__/": {
+    "route": "'__debug__/'",
+    "view": {
+      "nodeName": "include",
+      "argList": "debug_toolbar.urls"
+    },
+    "kwargs": null,
+    "name": null
+  },
+  "__requests_tracker__/": {
+    "route": "\"__requests_tracker__/\"",
+    "view": {
+      "nodeName": "include",
+      "argList": "requests_tracker.urls"
+    },
+    "kwargs": null,
+    "name": null
   }
 }

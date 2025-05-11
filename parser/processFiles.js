@@ -1,5 +1,5 @@
 const fs = require('fs');
-
+const path = require('path');
 
 function processArguments(ast) {
 
@@ -55,21 +55,24 @@ function checkArguments(availableArguments) {
 function getSettingsFile(availableArguments, pyFiles) {
     let isValidSettingAvailable = checkArguments(availableArguments)
 
-if (isValidSettingAvailable === false) {
-    console.log(error('No valid settings available for os.environ.setdefault.'));
-    return false
-}
+    if (isValidSettingAvailable === false) {
+        console.log(error('No valid settings available for os.environ.setdefault.'));
+        return false
+    }
 
-let settingsParentFolderName = isValidSettingAvailable.split('.')[0]
-let settingsFileName = isValidSettingAvailable.split('.')[1]
+    let settingsParentFolderName = isValidSettingAvailable.split('.')[0]
+    let settingsFileName = isValidSettingAvailable.split('.')[1]
+    // setting file name
+    let settingRelatedFilesPath = pyFiles.find(file => {
+        const normalizedPath = path.normalize(file);
+        const expectedEnding = path.join(settingsParentFolderName, `${settingsFileName}.py`);
+        return normalizedPath.endsWith(expectedEnding) && 
+            normalizedPath.includes(settingsParentFolderName) && 
+            normalizedPath.includes(settingsFileName);
+    });
 
-let settingRelatedFilesPath = pyFiles.find(file => file.endsWith('.py') && 
-file.includes(settingsParentFolderName) && 
-file.includes(settingsFileName)
-) 
-
-console.log('settingsParentFolderName:', settingsParentFolderName);
-return settingRelatedFilesPath
+    console.log('settingsParentFolderName:', settingsParentFolderName);
+    return settingRelatedFilesPath
 
 }
 

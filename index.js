@@ -18,8 +18,8 @@ const warning = chalk.yellow.bold;
 
 console.log(message('Welcome to Django Static Analyzer!'));
 // const path = readlineSync.question(message('Enter the path for Django\'s root directory: '));
-// const path = "D:\\STATIC\\ArchiveBox\\archivebox"
-const path = "D:\\STATIC\\rest-sample"
+const path = "D:\\STATIC\\ArchiveBox\\archivebox"
+// const path = "D:\\STATIC\\rest-sample"
 console.log(message('Analyzing the directory...'));
 
 
@@ -40,7 +40,6 @@ console.log(message('Analyzing the directory...'));
            
         console.log(pyFiles)
         let settingsFilePath = getSettingsFile(availableArguments, pyFiles);
-        console.log(success('Settings file found:', settingsFilePath));
         if (!settingsFilePath) {
             console.log(error('No valid settings file found.'));
             throw new Error('No valid settings file found.');
