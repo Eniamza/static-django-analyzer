@@ -12,9 +12,8 @@ function processArguments(ast) {
     allCallFunctions.forEach((call) => {
         let functionName = call.firstNamedChild.text
         if ( functionName === "os.environ.setdefault") {
-            call.descendantsOfType("string").forEach((argList) => {
-                const cleanText = argList.text.replace(/^"|"$/g, '')
-                allArgumentsAvailable.push(cleanText)
+            call.descendantsOfType("string_content").forEach((argList) => {
+                allArgumentsAvailable.push(argList.text)
             })
         }
     })
@@ -33,9 +32,14 @@ function checkArguments(availableArguments) {
         return false
     }
 
-    let validArgument = availableArguments.find((arg) => {
-        return arg !== "DJANGO_SETTINGS_MODULE"
-    })
+    let validArgument 
+    console.log('Available arguments:', availableArguments);
+    for (const arg of availableArguments) {
+        if (arg !== "DJANGO_SETTINGS_MODULE") {
+            validArgument = arg
+            break
+        }
+    }
 
 
     if (validArgument) {
@@ -63,6 +67,8 @@ let settingRelatedFilesPath = pyFiles.find(file => file.endsWith('.py') &&
 file.includes(settingsParentFolderName) && 
 file.includes(settingsFileName)
 ) 
+
+console.log('settingsParentFolderName:', settingsParentFolderName);
 return settingRelatedFilesPath
 
 }
