@@ -71,7 +71,7 @@ function getSettingsFile(availableArguments, pyFiles) {
             normalizedPath.includes(settingsFileName);
     });
 
-    console.log('settingsParentFolderName:', settingsParentFolderName);
+    // console.log('settingsParentFolderName:', settingsParentFolderName);
     return settingRelatedFilesPath
 
 }
@@ -155,8 +155,8 @@ function parseCallNode(callNode) {
             nodeName = identifierNode.text
             argList = []
             argsNode.namedChildren.forEach((child) => {
-                console.log(nodeName)
-                console.log('child111111:', child.text);
+                // console.log(nodeName)
+                // console.log('child111111:', child.text);
                 argList.push(child.text)
             })
 
@@ -211,7 +211,7 @@ function parseKeywordArguments(arg) {
         keywordValue = keywordValue.slice(1, -1); // Remove quotes
     }
     else if (valueNode.type === 'call') {
-        console.log('Call node found----------------------');
+        // console.log('Call node found----------------------');
         let parsedCall = parseCallNode(valueNode);
         keywordValue = parsedCall
 
@@ -288,7 +288,7 @@ function getRootUrls(ast, installedApps) {
         for (const [index, arg] of value.entries()) {
             // If the index is 0 and it's not a keyword argument, it's the route
             if (index === 0 && arg.type !== 'keyword_argument') {
-                console.log('Key name', key);
+                // console.log('Key name', key);
                 // buildPathArgumentObject.route = arg.descendantsOfType('string_content')[0].text;
 
                 if (!arg.descendantsOfType('string_content')[0]) {

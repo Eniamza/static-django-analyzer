@@ -85,7 +85,7 @@ function mergeParentandChildURLs(parentMap,childMap) {
         }
     }
 
-    console.log('Merged Map:', mergedMap);
+    // console.log('Merged Map:', mergedMap);
     return mergedMap;
 
 

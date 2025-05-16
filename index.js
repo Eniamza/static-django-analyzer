@@ -18,9 +18,9 @@ const warning = chalk.yellow.bold;
 // Asking user the path for Django's root directory
 
 console.log(message('Welcome to Django Static Analyzer!'));
-// const path = readlineSync.question(message('Enter the path for Django\'s root directory: '));
+const path = readlineSync.question(message('Enter the path for Django\'s root directory: '));
 // const path = "D:\\STATIC\\ArchiveBox\\archivebox"
-const path = "D:\\STATIC\\rest-sample"
+// const path = "D:\\STATIC\\rest-sample"
 console.log(message('Analyzing the directory...'));
 
 
@@ -39,7 +39,7 @@ console.log(message('Analyzing the directory...'));
         let availableArguments = processArguments(ast);
         console.log(success('Available arguments for os.environ.setdefault:', availableArguments));
            
-        console.log(pyFiles)
+        // console.log(pyFiles)
         let settingsFilePath = getSettingsFile(availableArguments, pyFiles);
         if (!settingsFilePath) {
             console.log(error('No valid settings file found.'));
@@ -81,9 +81,9 @@ console.log(message('Analyzing the directory...'));
             finalMergedMaps.push(mergedParentandChild);
         }
 
-        console.log(success('Final Merged Maps:', finalMergedMaps));
+        // console.log(success('Final Merged Maps:', finalMergedMaps));
         fs.writeFileSync('mergedUrls.json', JSON.stringify(finalMergedMaps, null, 2));
-
+        console.log(success('Merged URLs saved to mergedUrls.json'));
         // let allSubURLFiles = listAllSubURLFiles(rootUrls, pyFiles);
         // console.log(success('All sub URL files found:', allSubURLFiles));
 
