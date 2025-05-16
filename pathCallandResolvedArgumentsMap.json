@@ -1,188 +1,29 @@
 {
-  "\"^static/(?P<path>.*)$": {
-    "route": "r\"^static/(?P<path>.*)$\"",
-    "view": "serve_static",
-    "kwargs": null,
-    "name": null
-  },
-  "robots.txt": {
-    "route": "'robots.txt'",
-    "view": "static.serve",
-    "kwargs": "{'document_root': settings.STATICFILES_DIRS[0], 'path': 'robots.txt'}",
-    "name": null
-  },
-  "favicon.ico": {
-    "route": "'favicon.ico'",
-    "view": "static.serve",
-    "kwargs": "{'document_root': settings.STATICFILES_DIRS[0], 'path': 'favicon.ico'}",
-    "name": null
-  },
-  "docs/": {
-    "route": "'docs/'",
+  "token/": {
+    "route": "'token/'",
     "view": {
-      "nodeName": "RedirectView.as_view",
-      "argList": [
-        "url='https://github.com/ArchiveBox/ArchiveBox/wiki'"
-      ]
-    },
-    "kwargs": null,
-    "name": "Docs"
-  },
-  "public/": {
-    "route": "'public/'",
-    "view": {
-      "nodeName": "PublicIndexView.as_view",
+      "nodeName": "TokenObtainPairView.as_view",
       "argList": []
     },
     "kwargs": null,
-    "name": "public-index"
+    "name": "token_obtain_pair"
   },
-  "archive/": {
-    "route": "'archive/'",
+  "token/refresh/": {
+    "route": "'token/refresh/'",
     "view": {
-      "nodeName": "RedirectView.as_view",
-      "argList": [
-        "url='/'"
-      ]
-    },
-    "kwargs": null,
-    "name": null
-  },
-  "archive/<path:path>": {
-    "route": "'archive/<path:path>'",
-    "view": {
-      "nodeName": "SnapshotView.as_view",
+      "nodeName": "TokenRefreshView.as_view",
       "argList": []
     },
     "kwargs": null,
-    "name": "Snapshot"
+    "name": "token_refresh"
   },
-  "admin/core/snapshot/add/": {
-    "route": "'admin/core/snapshot/add/'",
+  "register/": {
+    "route": "'register/'",
     "view": {
-      "nodeName": "RedirectView.as_view",
-      "argList": [
-        "url='/add/'"
-      ]
-    },
-    "kwargs": null,
-    "name": null
-  },
-  "add/": {
-    "route": "'add/'",
-    "view": {
-      "nodeName": "AddView.as_view",
+      "nodeName": "RegisterView.as_view",
       "argList": []
     },
     "kwargs": null,
-    "name": "add"
-  },
-  "jobs/": {
-    "route": "\"jobs/\"",
-    "view": {
-      "nodeName": "JobsDashboardView.as_view",
-      "argList": []
-    },
-    "kwargs": null,
-    "name": "jobs_dashboard"
-  },
-  "accounts/login/": {
-    "route": "'accounts/login/'",
-    "view": {
-      "nodeName": "RedirectView.as_view",
-      "argList": [
-        "url='/admin/login/'"
-      ]
-    },
-    "kwargs": null,
-    "name": null
-  },
-  "accounts/logout/": {
-    "route": "'accounts/logout/'",
-    "view": {
-      "nodeName": "RedirectView.as_view",
-      "argList": [
-        "url='/admin/logout/'"
-      ]
-    },
-    "kwargs": null,
-    "name": null
-  },
-  "accounts/": {
-    "route": "'accounts/'",
-    "view": {
-      "nodeName": "include",
-      "argList": "django.contrib.auth.urls"
-    },
-    "kwargs": null,
-    "name": null
-  },
-  "admin/": {
-    "route": "'admin/'",
-    "view": "archivebox_admin.urls",
-    "kwargs": null,
-    "name": null
-  },
-  "api/": {
-    "route": "\"api/\"",
-    "view": {
-      "nodeName": "include",
-      "argList": "api.urls"
-    },
-    "kwargs": null,
-    "name": "api"
-  },
-  "health/": {
-    "route": "'health/'",
-    "view": {
-      "nodeName": "HealthCheckView.as_view",
-      "argList": []
-    },
-    "kwargs": null,
-    "name": "healthcheck"
-  },
-  "error/": {
-    "route": "'error/'",
-    "view": "lambda *_: 1/0",
-    "kwargs": null,
-    "name": null
-  },
-  "index.html": {
-    "route": "'index.html'",
-    "view": {
-      "nodeName": "RedirectView.as_view",
-      "argList": [
-        "url='/'"
-      ]
-    },
-    "kwargs": null,
-    "name": null
-  },
-  "": {
-    "route": "''",
-    "view": {
-      "nodeName": "HomepageView.as_view",
-      "argList": []
-    },
-    "kwargs": null,
-    "name": "Home"
-  },
-  "__debug__/": {
-    "route": "'__debug__/'",
-    "view": {
-      "nodeName": "include",
-      "argList": "debug_toolbar.urls"
-    },
-    "kwargs": null,
-    "name": null
-  },
-  "__requests_tracker__/": {
-    "route": "\"__requests_tracker__/\"",
-    "view": {
-      "nodeName": "include",
-      "argList": "requests_tracker.urls"
-    },
-    "kwargs": null,
-    "name": null
+    "name": "auth_register"
   }
 }

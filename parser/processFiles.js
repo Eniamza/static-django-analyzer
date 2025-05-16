@@ -247,7 +247,7 @@ function getRootUrls(ast, installedApps) {
 
     for (const pathCall of allPathCallNodes) {
         let arguments = pathCall.namedChildren[1];
-        let pathName = arguments.descendantsOfType('string')[0].text.slice(1, -1);
+        let pathName = arguments.descendantsOfType('string_content')[0].text
         let pathArguments = []
 
         arguments.namedChildren.forEach((arg) => {
@@ -267,7 +267,7 @@ function getRootUrls(ast, installedApps) {
     let pathCallandResolvedArgumentsMap = {}
 
     for (const [key, value] of Object.entries(pathCallandArgumentsMap)) {
-        console.log(`Processing key: ${key}`);
+        // console.log(`Processing key: ${key}`);
 
         let buildPathArgumentObject = {
             route: null,
@@ -280,29 +280,29 @@ function getRootUrls(ast, installedApps) {
             // If the index is 0 and it's not a keyword argument, it's the route
             if (index === 0 && arg.type !== 'keyword_argument') {
                 buildPathArgumentObject.route = arg.text;
-                console.log('route:', arg.text);
+                // console.log('route:', arg.text);
             }
             // If the index is 1 and it's not a keyword argument, it's the view
             else if (index === 1 && arg.type !== 'keyword_argument') {
                 if (arg.type === 'call') {
                     let parsedCall = parseCallNode(arg);
                     buildPathArgumentObject.view = parsedCall;
-                    console.log('view:', parsedCall.nodeName);
+                    // console.log('view:', parsedCall.nodeName);
                 }
                 else {
                     buildPathArgumentObject.view = arg.text;
-                    console.log('view:', arg.text);
+                    // console.log('view:', arg.text);
                 }
             }
             // If the index is 2 and it's a dictionary type, it's the kwargs
             else if (index === 2 && arg.type === 'dictionary') {
                 buildPathArgumentObject.kwargs = arg.text;
-                console.log('kwargs:', arg.text);
+                // console.log('kwargs:', arg.text);
             }
             // If the index is 3 and it's not a keyword argument, it's the name
             else if (index === 3 && arg.type !== 'keyword_argument') {
                 buildPathArgumentObject.name = arg.text;
-                console.log('name:', arg.text);
+                // console.log('name:', arg.text);
             }
             // If it's a keyword argument, check its name and assign it accordingly
             else if (arg.type === 'keyword_argument') {
@@ -313,16 +313,16 @@ function getRootUrls(ast, installedApps) {
 
                 if (keywordName === 'name') {
                     buildPathArgumentObject.name = keywordValue;
-                    console.log('name:', keywordValue);
+                    // console.log('name:', keywordValue);
                 } else if (keywordName === 'kwargs') {
                     buildPathArgumentObject.kwargs = keywordValue;
-                    console.log('kwargs:', keywordValue);
+                    // console.log('kwargs:', keywordValue);
                 } else if (keywordName === 'route') {
                     buildPathArgumentObject.route = keywordValue;
-                    console.log('route:', keywordValue);
+                    // console.log('route:', keywordValue);
                 } else if (keywordName === 'view') {
                     buildPathArgumentObject.view = keywordValue;
-                    console.log('view:', keywordValue);
+                    // console.log('view:', keywordValue);
                 }
                 else {
                     console.log('Unknown keyword argument:', keywordName);
@@ -334,9 +334,50 @@ function getRootUrls(ast, installedApps) {
     
     }
     // console.log('All path and re_path calls:', pathCallandArgumentsMap);
-    console.log('All path and re_path calls:', pathCallandResolvedArgumentsMap);
+    // console.log('All path and re_path calls:', pathCallandResolvedArgumentsMap);
     fs.writeFileSync('pathCallandResolvedArgumentsMap.json', JSON.stringify(pathCallandResolvedArgumentsMap, null, 2), 'utf-8');
     return pathCallandResolvedArgumentsMap;
 }
 
-module.exports = { processArguments, checkArguments, getSettingsFile, getInstalledApps , getRootUrls }
+function listAllSubURLFiles(pathObject, pyFiles) {
+    let allSubURLs = []
+
+        let subView = value.view
+        // example sub view = { nodeName: 'include', argList: 'api.urls' }
+        // console.log(key)
+        // console.log('subView:', subView);
+        // console.log('typeof subView:', typeof subView);
+        // console.log('subView.nodeName:', subView.nodeName);
+        // console.log('subView.argList:', subView.argList);
+
+        if(subView && typeof subView === 'object' && subView.nodeName === 'include' && typeof subView.argList === 'string') {
+            
+            let subViewPath = subView.argList
+            let subviewParentFolderName = subViewPath.split('.')[0]
+            let subviewFileName = subViewPath.split('.')[1]
+            console.log('subviewParentFolderName:', subviewParentFolderName);
+            console.log('subviewFileName:', subviewFileName);
+            if(subViewPath.includes('django')) {
+                console.log('Skipping a Default Django URL:', subViewPath);
+                continue
+            }
+            let subViewFilePath = pyFiles.find(file => {
+                const normalizedPath = path.normalize(file);
+                const expectedEnding = path.join(subviewParentFolderName, `${subviewFileName}.py`);
+                return normalizedPath.endsWith(expectedEnding) && 
+                    normalizedPath.includes(subviewParentFolderName) && 
+                    normalizedPath.includes(subviewFileName);
+            });
+            if (subViewFilePath) {
+                allSubURLs.push(subViewFilePath);
+                console.log('Found URL file:', subViewFilePath);
+            } else {
+                console.log(`Could not find URL file for: ${subviewParentFolderName}.${subviewFileName}`);
+            }
+        }
+
+    console.log('allSubURLs:', allSubURLs);
+    return allSubURLs
+}
+
+module.exports = { processArguments, checkArguments, getSettingsFile, getInstalledApps , getRootUrls, listAllSubURLFiles }

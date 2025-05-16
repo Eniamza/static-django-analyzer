@@ -4,7 +4,7 @@ const fs = require('fs');
 
 const { listPythonFiles } = require('./lib/listPythonFiles.js');
 const { buildAST } = require('./parser/buildAST.js');
-const { processArguments, getSettingsFile, getInstalledApps, getRootUrls } = require("./parser/processFiles.js");
+const { processArguments, getSettingsFile, getInstalledApps, getRootUrls, listAllSubURLFiles } = require("./parser/processFiles.js");
 const { get } = require('http');
 
 // Defining Chalk Colors
@@ -18,8 +18,8 @@ const warning = chalk.yellow.bold;
 
 console.log(message('Welcome to Django Static Analyzer!'));
 // const path = readlineSync.question(message('Enter the path for Django\'s root directory: '));
-const path = "D:\\STATIC\\ArchiveBox\\archivebox"
-// const path = "D:\\STATIC\\rest-sample"
+// const path = "D:\\STATIC\\ArchiveBox\\archivebox"
+const path = "D:\\STATIC\\rest-sample"
 console.log(message('Analyzing the directory...'));
 
 
@@ -61,6 +61,15 @@ console.log(message('Analyzing the directory...'));
         console.log(success('root urls.py found:', urlsFilePath));
         let urlsAst = buildAST(urlsFilePath);
         let rootUrls = getRootUrls(urlsAst,installedApps);
+        let allSubURLFiles = listAllSubURLFiles(rootUrls, pyFiles);
+        console.log(success('All sub URL files found:', allSubURLFiles));
+
+        for (const filePath of allSubURLFiles) {
+            let ast = buildAST(filePath);
+            let rooturltest = getRootUrls(ast, []);
+            console.log(success('file:', filePath));
+            console.log(rooturltest);
+        }
 
     } catch (err) {
         console.log(error('Error processing files:'), err.message);
