@@ -1,0 +1,262 @@
+[
+  {
+    "rootUrl": "api/v1/movies/",
+    "isNextLevelView": false,
+    "subUrls": [
+      {
+        "fullRoute": "api/v1/movies/",
+        "route": "",
+        "view": {
+          "nodeName": "ListCreateMovieAPIView.as_view",
+          "argList": []
+        },
+        "name": "get_post_movies",
+        "kwargs": null
+      },
+      {
+        "fullRoute": "api/v1/movies/<int:pk>/",
+        "route": "<int:pk>/",
+        "view": {
+          "nodeName": "RetrieveUpdateDestroyMovieAPIView.as_view",
+          "argList": []
+        },
+        "name": "get_delete_update_movie",
+        "kwargs": null
+      }
+    ],
+    "rootView": "movies.urls",
+    "name": null,
+    "kwargs": null
+  },
+  {
+    "rootUrl": "api/v1/auth/",
+    "isNextLevelView": false,
+    "subUrls": [
+      {
+        "fullRoute": "api/v1/auth/token/",
+        "route": "token/",
+        "view": {
+          "nodeName": "TokenObtainPairView.as_view",
+          "argList": []
+        },
+        "name": "token_obtain_pair",
+        "kwargs": null
+      },
+      {
+        "fullRoute": "api/v1/auth/token/refresh/",
+        "route": "token/refresh/",
+        "view": {
+          "nodeName": "TokenRefreshView.as_view",
+          "argList": []
+        },
+        "name": "token_refresh",
+        "kwargs": null
+      },
+      {
+        "fullRoute": "api/v1/auth/register/",
+        "route": "register/",
+        "view": {
+          "nodeName": "RegisterView.as_view",
+          "argList": []
+        },
+        "name": "auth_register",
+        "kwargs": null
+      }
+    ],
+    "rootView": "authentication.urls",
+    "name": null,
+    "kwargs": null
+  },
+  {
+    "rootUrl": "admin/",
+    "isNextLevelView": true,
+    "subUrls": [],
+    "rootView": "admin.site.urls",
+    "name": null,
+    "kwargs": null
+  },
+  {
+    "rootUrl": "^static/(?P<path>.*)$",
+    "isNextLevelView": true,
+    "subUrls": [],
+    "rootView": "serve_static",
+    "name": null,
+    "kwargs": null
+  },
+  {
+    "rootUrl": "robots.txt",
+    "isNextLevelView": true,
+    "subUrls": [],
+    "rootView": "static.serve",
+    "name": null,
+    "kwargs": "{'document_root': settings.STATICFILES_DIRS[0], 'path': 'robots.txt'}"
+  },
+  {
+    "rootUrl": "favicon.ico",
+    "isNextLevelView": true,
+    "subUrls": [],
+    "rootView": "static.serve",
+    "name": null,
+    "kwargs": "{'document_root': settings.STATICFILES_DIRS[0], 'path': 'favicon.ico'}"
+  },
+  {
+    "rootUrl": "docs/",
+    "isNextLevelView": true,
+    "subUrls": [],
+    "rootView": {
+      "nodeName": "RedirectView.as_view",
+      "argList": [
+        "url='https://github.com/ArchiveBox/ArchiveBox/wiki'"
+      ]
+    },
+    "name": "Docs",
+    "kwargs": null
+  },
+  {
+    "rootUrl": "public/",
+    "isNextLevelView": true,
+    "subUrls": [],
+    "rootView": {
+      "nodeName": "PublicIndexView.as_view",
+      "argList": []
+    },
+    "name": "public-index",
+    "kwargs": null
+  },
+  {
+    "rootUrl": "archive/",
+    "isNextLevelView": true,
+    "subUrls": [],
+    "rootView": {
+      "nodeName": "RedirectView.as_view",
+      "argList": [
+        "url='/'"
+      ]
+    },
+    "name": null,
+    "kwargs": null
+  },
+  {
+    "rootUrl": "archive/<path:path>",
+    "isNextLevelView": true,
+    "subUrls": [],
+    "rootView": {
+      "nodeName": "SnapshotView.as_view",
+      "argList": []
+    },
+    "name": "Snapshot",
+    "kwargs": null
+  },
+  {
+    "rootUrl": "admin/core/snapshot/add/",
+    "isNextLevelView": true,
+    "subUrls": [],
+    "rootView": {
+      "nodeName": "RedirectView.as_view",
+      "argList": [
+        "url='/add/'"
+      ]
+    },
+    "name": null,
+    "kwargs": null
+  },
+  {
+    "rootUrl": "add/",
+    "isNextLevelView": true,
+    "subUrls": [],
+    "rootView": {
+      "nodeName": "AddView.as_view",
+      "argList": []
+    },
+    "name": "add",
+    "kwargs": null
+  },
+  {
+    "rootUrl": "accounts/login/",
+    "isNextLevelView": true,
+    "subUrls": [],
+    "rootView": {
+      "nodeName": "RedirectView.as_view",
+      "argList": [
+        "url='/admin/login/'"
+      ]
+    },
+    "name": null,
+    "kwargs": null
+  },
+  {
+    "rootUrl": "accounts/logout/",
+    "isNextLevelView": true,
+    "subUrls": [],
+    "rootView": {
+      "nodeName": "RedirectView.as_view",
+      "argList": [
+        "url='/admin/logout/'"
+      ]
+    },
+    "name": null,
+    "kwargs": null
+  },
+  {
+    "rootUrl": "accounts/",
+    "isNextLevelView": false,
+    "subUrls": [],
+    "rootView": "django.contrib.auth.urls",
+    "name": null,
+    "kwargs": null
+  },
+  {
+    "rootUrl": "api/",
+    "isNextLevelView": false,
+    "subUrls": [],
+    "rootView": "api.urls",
+    "name": "api",
+    "kwargs": null
+  },
+  {
+    "rootUrl": "health/",
+    "isNextLevelView": true,
+    "subUrls": [],
+    "rootView": {
+      "nodeName": "HealthCheckView.as_view",
+      "argList": [
+        "url='/admin/login/'",
+        "route=\"/22/22/22\""
+      ]
+    },
+    "name": "healthcheck",
+    "kwargs": null
+  },
+  {
+    "rootUrl": "error/",
+    "isNextLevelView": true,
+    "subUrls": [],
+    "rootView": "lambda *_: 1/0",
+    "name": null,
+    "kwargs": null
+  },
+  {
+    "rootUrl": "index.html",
+    "isNextLevelView": true,
+    "subUrls": [],
+    "rootView": {
+      "nodeName": "RedirectView.as_view",
+      "argList": [
+        "url='/'"
+      ]
+    },
+    "name": null,
+    "kwargs": null
+  },
+  {
+    "rootUrl": "",
+    "isNextLevelView": true,
+    "subUrls": [],
+    "rootView": {
+      "nodeName": "HomepageView.as_view",
+      "argList": []
+    },
+    "name": "Home",
+    "kwargs": null
+  }
+]

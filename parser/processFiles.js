@@ -155,7 +155,8 @@ function parseCallNode(callNode) {
             nodeName = identifierNode.text
             argList = []
             argsNode.namedChildren.forEach((child) => {
-                console.log('child:', child.text);
+                console.log(nodeName)
+                console.log('child111111:', child.text);
                 argList.push(child.text)
             })
 
@@ -165,6 +166,12 @@ function parseCallNode(callNode) {
             }
         }
         
+    }
+
+    console.log('Invalid call node structure:', callNode);
+    return {
+        nodeName: null,
+        argList: null
     }
 
     
@@ -251,7 +258,9 @@ function getRootUrls(ast, installedApps) {
         let pathArguments = []
 
         arguments.namedChildren.forEach((arg) => {
+            // console.log('arg:', arg);
             pathArguments.push(arg)
+
         }
         )
 
@@ -279,7 +288,28 @@ function getRootUrls(ast, installedApps) {
         for (const [index, arg] of value.entries()) {
             // If the index is 0 and it's not a keyword argument, it's the route
             if (index === 0 && arg.type !== 'keyword_argument') {
-                buildPathArgumentObject.route = arg.text;
+                console.log('Key name', key);
+                // buildPathArgumentObject.route = arg.descendantsOfType('string_content')[0].text;
+
+                if (!arg.descendantsOfType('string_content')[0]) {
+                    if (arg.text === "''"){
+                        buildPathArgumentObject.route = ''
+                    }
+                    else {
+                        if(arg.text === "''") {
+                            buildPathArgumentObject.route = ''
+                        }else {
+                            buildPathArgumentObject.route = arg.text;
+                        }
+
+                    }
+                }
+                else {
+                    
+                    buildPathArgumentObject.route = arg.descendantsOfType('string_content')[0].text;
+                }
+
+
                 // console.log('route:', arg.text);
             }
             // If the index is 1 and it's not a keyword argument, it's the view
@@ -339,45 +369,44 @@ function getRootUrls(ast, installedApps) {
     return pathCallandResolvedArgumentsMap;
 }
 
-function listAllSubURLFiles(pathObject, pyFiles) {
-    let allSubURLs = []
+function listSubURLFiles(pathObject, pyFiles) {
+    let subView = pathObject.view;
 
-        let subView = value.view
-        // example sub view = { nodeName: 'include', argList: 'api.urls' }
-        // console.log(key)
-        // console.log('subView:', subView);
-        // console.log('typeof subView:', typeof subView);
-        // console.log('subView.nodeName:', subView.nodeName);
-        // console.log('subView.argList:', subView.argList);
 
-        if(subView && typeof subView === 'object' && subView.nodeName === 'include' && typeof subView.argList === 'string') {
-            
-            let subViewPath = subView.argList
-            let subviewParentFolderName = subViewPath.split('.')[0]
-            let subviewFileName = subViewPath.split('.')[1]
-            console.log('subviewParentFolderName:', subviewParentFolderName);
-            console.log('subviewFileName:', subviewFileName);
-            if(subViewPath.includes('django')) {
-                console.log('Skipping a Default Django URL:', subViewPath);
-                continue
-            }
-            let subViewFilePath = pyFiles.find(file => {
-                const normalizedPath = path.normalize(file);
-                const expectedEnding = path.join(subviewParentFolderName, `${subviewFileName}.py`);
-                return normalizedPath.endsWith(expectedEnding) && 
-                    normalizedPath.includes(subviewParentFolderName) && 
-                    normalizedPath.includes(subviewFileName);
-            });
-            if (subViewFilePath) {
-                allSubURLs.push(subViewFilePath);
-                console.log('Found URL file:', subViewFilePath);
-            } else {
-                console.log(`Could not find URL file for: ${subviewParentFolderName}.${subviewFileName}`);
-            }
-        }
+    if (!subView || typeof subView !== 'object' || 
+        subView.nodeName !== 'include' || 
+        typeof subView.argList !== 'string') {
+        return null;
+    }
 
-    console.log('allSubURLs:', allSubURLs);
-    return allSubURLs
+    let subViewPath = subView.argList;
+    let [subviewParentFolderName, subviewFileName] = subViewPath.split('.');
+
+
+    // console.log('subviewParentFolderName:', subviewParentFolderName);
+    // console.log('subviewFileName:', subviewFileName);
+
+    if (subViewPath.includes('django')) {
+        console.log('Skipping a Default Django URL:', subViewPath);
+        return null;
+    }
+
+    let subViewFilePath = pyFiles.find(file => {
+        const normalizedPath = path.normalize(file);
+        const expectedEnding = path.join(subviewParentFolderName, `${subviewFileName}.py`);
+        return normalizedPath.endsWith(expectedEnding) && 
+               normalizedPath.includes(subviewParentFolderName) && 
+               normalizedPath.includes(subviewFileName);
+    });
+
+    // Log and return the result
+    if (subViewFilePath) {
+        console.log('Found URL file:', subViewFilePath);
+        return subViewFilePath;
+    } 
+
+    // console.log(`Could not find URL file for: ${subviewParentFolderName}.${subviewFileName}`);
+    return null;
 }
 
-module.exports = { processArguments, checkArguments, getSettingsFile, getInstalledApps , getRootUrls, listAllSubURLFiles }
+module.exports = { processArguments, checkArguments, getSettingsFile, getInstalledApps , getRootUrls, listSubURLFiles }

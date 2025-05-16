@@ -4,7 +4,8 @@ const fs = require('fs');
 
 const { listPythonFiles } = require('./lib/listPythonFiles.js');
 const { buildAST } = require('./parser/buildAST.js');
-const { processArguments, getSettingsFile, getInstalledApps, getRootUrls, listAllSubURLFiles } = require("./parser/processFiles.js");
+const { processArguments, getSettingsFile, getInstalledApps, getRootUrls, listSubURLFiles } = require("./parser/processFiles.js");
+const { mergeParentandChildURLs } = require('./parser/merger.js');
 const { get } = require('http');
 
 // Defining Chalk Colors
@@ -61,15 +62,37 @@ console.log(message('Analyzing the directory...'));
         console.log(success('root urls.py found:', urlsFilePath));
         let urlsAst = buildAST(urlsFilePath);
         let rootUrls = getRootUrls(urlsAst,installedApps);
-        let allSubURLFiles = listAllSubURLFiles(rootUrls, pyFiles);
-        console.log(success('All sub URL files found:', allSubURLFiles));
 
-        for (const filePath of allSubURLFiles) {
-            let ast = buildAST(filePath);
-            let rooturltest = getRootUrls(ast, []);
-            console.log(success('file:', filePath));
-            console.log(rooturltest);
+        let finalMergedMaps = [];
+
+        for (const [key,value] of Object.entries(rootUrls)) {
+            let subUrl = listSubURLFiles(value, pyFiles);
+            if (!subUrl) {
+                let mergedParentandChild = mergeParentandChildURLs(value, {});
+                finalMergedMaps.push(mergedParentandChild);
+                continue;
+            }
+            console.log(success('Root URL:', key));
+            console.log(success('Sub URL:', subUrl));
+
+            let subUrlAst = buildAST(subUrl);
+            let subUrlRootUrls = getRootUrls(subUrlAst, installedApps);
+            let mergedParentandChild = mergeParentandChildURLs(value, subUrlRootUrls);
+            finalMergedMaps.push(mergedParentandChild);
         }
+
+        console.log(success('Final Merged Maps:', finalMergedMaps));
+        fs.writeFileSync('mergedUrls.json', JSON.stringify(finalMergedMaps, null, 2));
+
+        // let allSubURLFiles = listAllSubURLFiles(rootUrls, pyFiles);
+        // console.log(success('All sub URL files found:', allSubURLFiles));
+
+        // for (const filePath of allSubURLFiles) {
+        //     let ast = buildAST(filePath);
+        //     let rooturltest = getRootUrls(ast, []);
+        //     console.log(success('file:', filePath));
+        //     console.log(rooturltest);
+        // }
 
     } catch (err) {
         console.log(error('Error processing files:'), err.message);

@@ -1,6 +1,6 @@
 {
   "token/": {
-    "route": "'token/'",
+    "route": "token/",
     "view": {
       "nodeName": "TokenObtainPairView.as_view",
       "argList": []
@@ -9,7 +9,7 @@
     "name": "token_obtain_pair"
   },
   "token/refresh/": {
-    "route": "'token/refresh/'",
+    "route": "token/refresh/",
     "view": {
       "nodeName": "TokenRefreshView.as_view",
       "argList": []
@@ -18,7 +18,7 @@
     "name": "token_refresh"
   },
   "register/": {
-    "route": "'register/'",
+    "route": "register/",
     "view": {
       "nodeName": "RegisterView.as_view",
       "argList": []
